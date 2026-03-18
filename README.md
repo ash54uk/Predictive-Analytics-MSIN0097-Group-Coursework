@@ -59,13 +59,6 @@ Covers the complete workflow:
 4. **Improved models** — Random Forest and XGBoost with feature engineering (cyclical month encoding, total proximity score); best R² ≈ 0.75, MdAPE ≈ 13.7%
 5. **Evaluation** — actual vs predicted plots, residual analysis, feature importances
 
-**Model results summary:**
-
-| Model | MAE | RMSE | R² | MdAPE |
-|---|---|---|---|---|
-| Ridge (baseline) | £60,340 | £95,776 | 0.52 | 22.8% |
-| Random Forest | £40,237 | £70,684 | 0.75 | 13.7% |
-| XGBoost | £41,237 | £71,272 | 0.75 | 14.4% |
 
 ### `broken_pipeline.ipynb` — standalone simplified pipeline
 
@@ -80,10 +73,4 @@ A self-contained Random Forest pipeline. Fixed bugs (see below) allow it to run 
 | 3 | `price` column included in feature matrix `X` | Target leakage — model trivially learns to predict price from price, producing meaningless near-perfect R² |
 | 4 | Categorical encoding referenced `property_type_raw` (non-existent column) | `KeyError` crash; pipeline never reaches training |
 
-## Key findings
 
-- **Location dominates:** `lat`/`lon` and `borough` are the top predictors. Trafford and Stockport command median prices 50–70% above Oldham and Rochdale.
-- **Floor area** is the strongest property-level predictor (Pearson r ≈ 0.55 in the EPC-linked sample).
-- **New-build premium:** ~25–30% over equivalent established properties.
-- **Price cycle:** Steady growth 2015–2022, post-COVID surge in 2021, correction in 2023–2024 as interest rates rose.
-- **EPC missingness is structural:** ~33% of properties have never had an EPC filed. A `has_epc` binary indicator captures this signal rather than silently imputing.
