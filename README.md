@@ -1,22 +1,47 @@
 # Predictive-Analytics-MSIN0097-Group-Coursework
-# Manchester Property Price Prediction
+# Manchester Property Price Prediction — AI Coding Agent Benchmark
 
-End-to-end data science pipeline for predicting residential property sale prices across Greater Manchester (2015–2024), covering 474,144 transactions.
+Benchmarking three AI coding agents (Claude Code, Cursor, Antigravity) on an end-to-end data science pipeline for predicting residential property sale prices across Greater Manchester (2015–2024).
 
-## Project structure
+## Project Overview
+
+Each AI agent was given the same prompt and dataset and asked to:
+1. Build a complete data science notebook (ingestion, EDA, modelling, improvement)
+2. Debug a separate broken ML pipeline (`broken_pipeline.ipynb`)
+
+The outputs were scored on code quality, analytical depth, model performance, and debugging accuracy. Results are compiled in `misc/Agent_Benchmarking_Framework.xlsx`.
+
+## Project Structure
 
 ```
 .
-├── manchester_features.parquet/   # Spark-partitioned dataset (474k transactions, 23 columns)
-├── manchester_property_analysis.ipynb  # Full EDA + modelling notebook
-├── broken_pipeline.ipynb          # Standalone pipeline (simplified, fixed)
-├── requirements.txt
-└── README.md
+├── README.md
+├── misc/
+│   ├── PROMPT.md                          # Exact prompt given to all three agents
+│   └── Agent_Benchmarking_Framework.xlsx  # Scoring rubric and results
+├── claude/
+│   ├── manchester_property_analysis.ipynb # Claude Code — main notebook
+│   ├── broken_pipeline.ipynb              # Claude Code — debugging task
+│   └── requirements.txt
+├── cursor/
+│   ├── manchester_property_analysis.ipynb # Cursor — main notebook
+│   ├── broken_pipeline.ipynb              # Cursor — debugging task
+│   ├── requirements.txt
+│   ├── INTERACTION_LOG.md                 # Cursor interaction log
+│   ├── cursor_notebook_scoring.md         # Cursor notebook scoring
+│   └── cursor_debugging_scoring.md        # Cursor debugging scoring
+└── antigravity/
+    ├── manchester_house_prices.ipynb       # Antigravity — main notebook
+    ├── broken_pipeline.ipynb              # Antigravity — debugging task
+    ├── requirements.txt
+    ├── Interaction Log Antigravity.md     # Antigravity interaction log
+    ├── antigravity_notebook_scoring.md    # Antigravity notebook scoring
+    └── antigravity_debugging_scoring.md   # Antigravity debugging scoring
 ```
 
 ## Dataset
 
-`manchester_features.parquet` is a Spark-partitioned directory. Each row is a property transaction with features including:
+The dataset (`manchester_features.parquet`) is a Spark-partitioned parquet directory containing 474,144 property transactions with 23 columns. **Note:** the dataset is not included in this repository due to size.
 
 | Feature | Description |
 |---|---|
@@ -37,40 +62,28 @@ End-to-end data science pipeline for predicting residential property sale prices
 
 ## Setup
 
+Each agent subdirectory has its own `requirements.txt`. To run a specific agent's notebooks:
+
 ```bash
+cd claude   # or cursor / antigravity
 pip install -r requirements.txt
 ```
 
-> **Note:** `manchester_features.parquet` is a Spark-partitioned directory. Use `engine='fastparquet'` when reading with pandas — pyarrow triggers a histogram bug on these files.
+> **Note:** When loading the dataset, use `engine='fastparquet'` — pyarrow triggers a histogram bug on Spark-partitioned parquet files.
 
 ```python
 df = pd.read_parquet('manchester_features.parquet/manchester_features.parquet', engine='fastparquet')
 ```
 
-## Notebooks
+## Bugs Found in `broken_pipeline.ipynb`
 
-### `manchester_property_analysis.ipynb` — full pipeline
-
-Covers the complete workflow:
-
-1. **Data ingestion & cleaning** — drops uninformative columns, parses dates, removes price outliers (1st–99th percentile), caps floor area extremes, adds `has_epc` missingness indicator
-2. **EDA** — price distributions, borough medians, property type breakdown, price trends (2015–2024), floor area vs price, EPC rating vs price, new-build premium (~25–30%), correlation matrix
-3. **Baseline model** — Ridge regression on log-transformed price; R² ≈ 0.52, MdAPE ≈ 22.8%
-4. **Improved models** — Random Forest and XGBoost with feature engineering (cyclical month encoding, total proximity score); best R² ≈ 0.75, MdAPE ≈ 13.7%
-5. **Evaluation** — actual vs predicted plots, residual analysis, feature importances
-
-
-### `broken_pipeline.ipynb` — standalone simplified pipeline
-
-A self-contained Random Forest pipeline. Fixed bugs (see below) allow it to run end-to-end.
-
-## Bugs fixed in `broken_pipeline.ipynb`
+All three agents were asked to find and fix bugs in the same broken pipeline. The four known bugs are:
 
 | # | Bug | Impact |
 |---|---|---|
 | 1 | `StandardScaler` fitted on the full dataset before `train_test_split` | Data leakage — test-set statistics contaminate training, inflating evaluation metrics |
 | 2 | `mean_squared_error` used but never imported | `NameError` crash at evaluation; no metrics produced |
-| 3 | `price` column included in feature matrix `X` | Target leakage — model trivially learns to predict price from price, producing meaningless near-perfect R² |
+| 3 | `price` column included in feature matrix `X` | Target leakage — model trivially predicts price from price |
 | 4 | Categorical encoding referenced `property_type_raw` (non-existent column) | `KeyError` crash; pipeline never reaches training |
 
-
+## Module: MSIN0097 Predictive Analytics — UCL School of Management
