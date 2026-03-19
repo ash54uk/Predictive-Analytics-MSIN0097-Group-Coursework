@@ -85,5 +85,3 @@ All three agents were asked to find and fix bugs in the same broken pipeline. Th
 | 2 | `mean_squared_error` used but never imported | `NameError` crash at evaluation; no metrics produced |
 | 3 | `price` column included in feature matrix `X` | Target leakage — model trivially predicts price from price |
 | 4 | Categorical encoding referenced `property_type_raw` (non-existent column) | `KeyError` crash; pipeline never reaches training |
-
-## Module: MSIN0097 Predictive Analytics — UCL School of Management
