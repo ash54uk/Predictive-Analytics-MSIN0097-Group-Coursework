@@ -85,3 +85,8 @@ All three agents were asked to find and fix bugs in the same broken pipeline. Th
 | 2 | `mean_squared_error` used but never imported | `NameError` crash at evaluation; no metrics produced |
 | 3 | `price` column included in feature matrix `X` | Target leakage — model trivially predicts price from price |
 | 4 | Categorical encoding referenced `property_type_raw` (non-existent column) | `KeyError` crash; pipeline never reaches training |
+
+In addition to the crashes above, bugs 1 and 3 are silent, so they do not raise errors but instead introduce data leakage that inflates model performance, making them harder to detect.
+
+
+
