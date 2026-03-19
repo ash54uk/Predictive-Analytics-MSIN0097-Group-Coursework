@@ -4,7 +4,6 @@
 **Task:** Find and fix all bugs in `broken_pipeline.ipynb`  
 **First-attempt success:** Yes  
 
-
 ---
 
 ## Bugs Found (4/4)
