@@ -75,7 +75,7 @@ pip install -r requirements.txt
 df = pd.read_parquet('manchester_features.parquet/manchester_features.parquet', engine='fastparquet')
 ```
 
-## Bugs Found in `broken_pipeline.ipynb`
+## Debugging Task `broken_pipeline.ipynb`
 
 All three agents were asked to find and fix bugs in the same broken pipeline. The four known bugs are:
 
