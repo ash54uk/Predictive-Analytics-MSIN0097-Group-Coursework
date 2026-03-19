@@ -1,4 +1,4 @@
-# AI Interaction Log — Manchester Property Price Prediction
+# Interaction Log — Manchester Property Price Prediction
 **Date:** 2026-03-18 | **Tool:** Claude Code
 
 ---
